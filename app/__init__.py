@@ -10,6 +10,6 @@ def create_app(config_class=Config):
         if app.config['ELASTICSEARCH_URL'] else None
 
     from app.main import bp as main_bp
-    app.register_blueprint(main_bp)
+    app.register_blueprint(main_bp, url_prefix='/internalapi')
 
     return app
