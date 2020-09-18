@@ -1,7 +1,7 @@
 FROM python
 WORKDIR /code
 
-ENV FLASK_APP app.py
+ENV FLASK_APP icc2.py
 ENV FLASK_RUN_HOST 0.0.0.0
 
 COPY requirements.txt requirements.txt
