@@ -1,5 +1,8 @@
 # Intertextual Canon Cloud 2
 
+This is the backend project, and will be the primary location for documentation
+on the entire project. For the front end, see [`icc2-frontend`](https://github.com/malan88/icc2-frontend).
+
 ## About
 
 Intertextual Canon Cloud is a platform for displaying and annotating texts in a
