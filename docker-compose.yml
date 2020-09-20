@@ -10,6 +10,12 @@ services:
             FLASK_ENV: development
         networks:
             - elastic
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
     es01:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
         container_name: es01
