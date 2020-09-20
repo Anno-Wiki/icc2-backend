@@ -5,7 +5,8 @@ class Config:
     POSTGRES = {
         'usr': 'postgres',
         'pw': 'postgres',
-        'db': 'postgres',
+        'host': 'db',
+        'db': 'annowiki2',
     }
 
     SECRET_KEY = os.environ.get('SECRET_KEY') \
@@ -14,7 +15,7 @@ class Config:
         or 'http://es01:9200'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         f'postgresql://{POSTGRES["usr"]}:' \
-        f'{POSTGRES["pw"]}@postgres/${POSTGRES["db"]}'
+        f'{POSTGRES["pw"]}@{POSTGRES["host"]}/${POSTGRES["db"]}'
 
     # SQLA settings
     SQLALCHEMY_TRACK_MODIFICATIONS = False
