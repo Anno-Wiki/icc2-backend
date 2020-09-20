@@ -1,6 +1,7 @@
 import os
 
-class Config(object):
+class Config:
+    # directories
     POSTGRES = {
         'usr': 'postgres',
         'pw': 'postgres',
@@ -14,3 +15,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         f'postgresql://{POSTGRES["usr"]}:' \
         f'{POSTGRES["pw"]}@postgres/${POSTGRES["db"]}'
+
+    # SQLA settings
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
