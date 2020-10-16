@@ -1,0 +1,3 @@
+[submodule "icc2-library"]
+	path = icc2-library
+	url = git@github.com:Anno-Wiki/icc2-library.git
