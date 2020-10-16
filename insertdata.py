@@ -19,15 +19,15 @@ def insertdata(text, annotations):
         for t in text:
             actions.append({
                 '_index': 'text',
-                '_type': a['type'],
                 '_id': f'{t["bookid"]}-{t["sequence"]}',
                 '_source': t
             })
         for a in annotations:
-            actions.append({
-                '_index': 'annotation',
-                '_id': f'{a["bookid"]}-{a["id"]}'
-            })
+                actions.append({
+                    '_index': a['type'],
+                    '_id': f'{a["bookid"]}-{a["id"]}',
+                    '_source': a
+                })
         result = helpers.bulk(current_app.es, actions)
     return result
 
@@ -35,7 +35,7 @@ def insertdata(text, annotations):
 def main(din):
     for d in os.listdir(din):
         if re.match(r'[0-9]+-', d):
-            text, annotations = getfiles(d)
+            text, annotations = getfiles(f'{din}/{d}')
             result = insertdata(text, annotations)
             print(result)
 
