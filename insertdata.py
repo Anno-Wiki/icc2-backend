@@ -1,7 +1,11 @@
 import argparse, json, os, re
+from urllib import request
 from app import create_app
 from flask import current_app
 from elasticsearch import helpers
+
+
+ESDB = 'http://es01:9200'
 
 
 def getfiles(directory):
@@ -33,6 +37,21 @@ def insertdata(text, annotations):
 
 
 def main(din):
+    # poll the es db until it responds
+    i = 0
+    while True:
+        try:
+            if not i % 1000:
+                print(f"Request {i}")
+            i += 1
+            request.urlopen(ESDB)
+        except:
+            if not i % 1000:
+                print("...nope")
+            continue
+        print("Success.")
+        break
+
     for d in os.listdir(din):
         if re.match(r'[0-9]+-', d):
             text, annotations = getfiles(f'{din}/{d}')
