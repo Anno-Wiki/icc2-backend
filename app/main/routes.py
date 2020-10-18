@@ -7,5 +7,5 @@ from app.main import bp
 
 @bp.route('/')
 def index():
-    results = app.es.get(index='text', id='1-0')
+    results = app.es.get(index='toc', id='1-1')
     return results
