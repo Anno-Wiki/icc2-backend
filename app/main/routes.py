@@ -5,7 +5,7 @@ from flask import current_app as app
 from app.main import bp
 
 
-@bp.route('/')
-def index():
-    results = app.es.get(index='toc', id='1-1')
+@bp.route('/<toc_id>')
+def index(toc_id):
+    results = app.es.get(index='toc', id=toc_id)
     return results
