@@ -1,4 +1,4 @@
-from datetime import datetime
+from functools import reduce
 
 from flask import current_app as app
 
@@ -80,7 +80,7 @@ def gettextblocks(tocid):
                             {
                                 'doc.offset':
                                 {
-                                    'gte': range['open'],
+                                    'lte': range['open'],
                                     'lt': range['close']
                                 }
                             }
@@ -90,5 +90,16 @@ def gettextblocks(tocid):
             }
         }
     )
+    # get rid of es cruft
     results = [r['_source']['doc'] for r in results['hits']['hits']]
     return {'results': results}
+
+
+@bp.route('/toc/<tocid>/raw')
+def rawtext(tocid):
+    blocks = gettextblocks(tocid)
+    range = tocrange(tocid)
+    offset = blocks['results'][0]['offset'] # offset is first text block
+    range = {k:v-offset for k,v in range.items()} # subtract offset from range
+    text = ''.join(a['text'] for a in blocks['results']) # join blocks
+    return {'offset': offset, 'text': text[range['open']:range['close']]}
