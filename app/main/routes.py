@@ -58,16 +58,16 @@ def nexttoc(tocid):
 
 
 @bp.route('/toc/<tocid>/range/')
-def tocrange(tocid):
+def getrange(tocid):
     toc = gettoc(tocid)
     next = nexttoc(tocid)
     return {'open': toc['open'], 'close': next['open']}
 
 
-@bp.route('/toc/<tocid>/textblocks')
+@bp.route('/toc/<tocid>/textblocks/')
 def gettextblocks(tocid):
     toc = gettoc(tocid)
-    range = tocrange(tocid)
+    range = getrange(tocid)
     results = app.es.search(
         index='text',
         body={
@@ -95,11 +95,76 @@ def gettextblocks(tocid):
     return {'results': results}
 
 
-@bp.route('/toc/<tocid>/raw')
+@bp.route('/toc/<tocid>/raw/')
 def rawtext(tocid):
     blocks = gettextblocks(tocid)
-    range = tocrange(tocid)
-    offset = blocks['results'][0]['offset'] # offset is first text block
-    range = {k:v-offset for k,v in range.items()} # subtract offset from range
-    text = ''.join(a['text'] for a in blocks['results']) # join blocks
+    range = getrange(tocid)
+    offset = blocks['results'][0]['offset']         # offset is first text block
+    range = {k:v-offset for k,v in range.items()}   # subtract offset from range
+    text = ''.join(a['text'] for a in blocks['results'])    # join blocks
     return {'offset': offset, 'text': text[range['open']:range['close']]}
+
+
+@bp.route('/toc/<tocid>/tocs')
+def gettocs(tocid):
+    toc = gettoc(tocid)
+    range = getrange(tocid)
+    results = app.es.search(
+        index='toc',
+        body={
+            'query': {
+                'bool': {
+                    'must': [
+                        {'match': {'doc.bookid': toc['bookid']}},
+                        {'match': {'doc.display': True}},
+                        {
+                            'range':
+                            {
+                                'doc.open':
+                                {
+                                    'gte': range['open'],
+                                    'lt': range['close']
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            'size': 10000,
+            'sort': ['doc.open']
+        }
+    )
+    tocs = [t['_source']['doc'] for t in results['hits']['hits']]
+    return {'results': tocs}
+
+
+@bp.route('/toc/<tocid>/styles')
+def getstyles(tocid):
+    toc = gettoc(tocid)
+    range = getrange(tocid)
+    results = app.es.search(
+        index='style',
+        body={
+            'query': {
+                'bool': {
+                    'must': [
+                        {'match': {'doc.bookid': toc['bookid']}},
+                        {
+                            'range':
+                            {
+                                'doc.open':
+                                {
+                                    'gte': range['open'],
+                                    'lt': range['close']
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            'size': 10000,
+            'sort': ['doc.open']
+        }
+    )
+    styles = [t['_source']['doc'] for t in results['hits']['hits']]
+    return {'results': styles}
