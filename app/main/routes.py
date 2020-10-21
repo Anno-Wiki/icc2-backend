@@ -64,14 +64,8 @@ def tocrange(tocid):
     return {'open': toc['open'], 'close': next['open']}
 
 
-@bp.route('/text/<textid>/')
-def gettextblock(textid):
-    text = app.es.get(index='text', id=textid)
-    return text['_source']['doc']
-
-
 @bp.route('/toc/<tocid>/textblocks')
-def rawtext(tocid):
+def gettextblocks(tocid):
     toc = gettoc(tocid)
     range = tocrange(tocid)
     results = app.es.search(
@@ -84,9 +78,10 @@ def rawtext(tocid):
                         {
                             'range':
                             {
-                                'offset':
+                                'doc.offset':
                                 {
-                                    'gte': range['open']
+                                    'gte': range['open'],
+                                    'lt': range['close']
                                 }
                             }
                         }
@@ -95,4 +90,5 @@ def rawtext(tocid):
             }
         }
     )
-    return results
+    results = [r['_source']['doc'] for r in results['hits']['hits']]
+    return {'results': results}
