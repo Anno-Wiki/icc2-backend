@@ -23,12 +23,11 @@ def toc(bookid):
                     ]
                 }
             },
-            'size': 10000
+            'size': 10000,
+            'sort': ['doc.open']
         }
     )
     # get rid of the es cruft
     results = results['hits']['hits']
     tocs = [t['_source']['doc'] for t in results]
-    # sort by place in book
-    tocs.sort(key=lambda i: i['open'])
     return {'results': tocs}
