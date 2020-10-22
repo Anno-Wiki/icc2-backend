@@ -5,10 +5,26 @@ from flask import current_app as app
 from app.main import bp
 
 
+def unfold(results):
+    """Helper route to unfold es results and dispense with dict cruft"""
+    return [t['_source']['doc'] for t in results['hits']['hits']]
+
+
 @bp.route('/toc/<toc_id>/')
 def gettoc(toc_id):
     results = app.es.get(index='toc', id=toc_id)
     return results['_source']['doc']
+
+
+@bp.route('/text/all')
+def alltexts():
+    results = app.es.search(
+        index='toc',
+        body={
+            'query': {'match': {'doc.depth': 0}}
+        }
+    )
+    return {'results': unfold(results)}
 
 
 @bp.route('/toc/<bookid>/all/')
@@ -28,10 +44,7 @@ def alltocs(bookid):
             'sort': ['doc.open']
         }
     )
-    # get rid of the es cruft
-    results = results['hits']['hits']
-    tocs = [t['_source']['doc'] for t in results]
-    return {'results': tocs}
+    return {'results': unfold(results)}
 
 
 @bp.route('/toc/<tocid>/next/')
@@ -54,7 +67,7 @@ def nexttoc(tocid):
             'sort': ['doc.id']
         }
     )
-    return results['hits']['hits'][0]['_source']['doc']
+    return unfold(results)[0]
 
 
 @bp.route('/toc/<tocid>/range/')
@@ -64,8 +77,8 @@ def getrange(tocid):
     return {'open': toc['open'], 'close': next['open']}
 
 
-@bp.route('/toc/<tocid>/textblocks/')
-def gettextblocks(tocid):
+@bp.route('/toc/<tocid>/blocks/')
+def getblocks(tocid):
     toc = gettoc(tocid)
     range = getrange(tocid)
     results = app.es.search(
@@ -91,17 +104,20 @@ def gettextblocks(tocid):
         }
     )
     # get rid of es cruft
-    results = [r['_source']['doc'] for r in results['hits']['hits']]
-    return {'results': results}
+    return {'results': unfold(results)}
 
 
 @bp.route('/toc/<tocid>/raw/')
 def rawtext(tocid):
-    blocks = gettextblocks(tocid)
+    blocks = getblocks(tocid)
     range = getrange(tocid)
-    offset = blocks['results'][0]['offset']         # offset is first text block
-    range = {k:v-offset for k,v in range.items()}   # subtract offset from range
-    text = ''.join(a['text'] for a in blocks['results'])    # join blocks
+
+    # offset is first text block
+    offset = blocks['results'][0]['offset']
+    # subtract offset from range
+    range = {k:v-offset for k,v in range.items()}
+    # join blocks
+    text = ''.join(a['text'] for a in blocks['results'])
     return {'offset': range['open'], 'text': text[range['open']:range['close']]}
 
 
@@ -134,8 +150,7 @@ def gettocs(tocid):
             'sort': ['doc.open']
         }
     )
-    tocs = [t['_source']['doc'] for t in results['hits']['hits']]
-    return {'results': tocs}
+    return {'results': unfold(results)}
 
 
 @bp.route('/toc/<tocid>/styles')
@@ -166,8 +181,7 @@ def getstyles(tocid):
             'sort': ['doc.open']
         }
     )
-    styles = [t['_source']['doc'] for t in results['hits']['hits']]
-    return {'results': styles}
+    return {'results': unfold(results)}
 
 
 @bp.route('/toc/<tocid>/formatted')
@@ -176,8 +190,8 @@ def formattedtext(tocid):
     text, offset = text['text'], text['offset']
     styles = getstyles(tocid)['results']
     tocs = gettocs(tocid)['results']
-    print(offset, flush=True)
 
+    # create an inserts dict for inserting the styles
     annotations = styles + tocs
     inserts = {}
     for a in annotations:
@@ -190,6 +204,7 @@ def formattedtext(tocid):
         inserts[a['open'] - offset] = open
         inserts[a['close'] - offset] = close
 
+    # insert the styles
     i = 0
     newtext = []
     for key in sorted(inserts):
