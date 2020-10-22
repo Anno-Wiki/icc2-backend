@@ -17,7 +17,7 @@ def create_app(config_class=Config):
         if app.config['ELASTICSEARCH_URL'] else None
 
     from app.main import bp as main_bp
-    app.register_blueprint(main_bp, url_prefix='/internalapi')
+    app.register_blueprint(main_bp, url_prefix='/_api')
 
-    CORS(app, resources={r"/internalapi/*": {"origins": "*"}})
+    CORS(app, resources={r"/_api/*": {"origins": "*"}})
     return app
