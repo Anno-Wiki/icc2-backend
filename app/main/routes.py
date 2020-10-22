@@ -168,3 +168,34 @@ def getstyles(tocid):
     )
     styles = [t['_source']['doc'] for t in results['hits']['hits']]
     return {'results': styles}
+
+
+@bp.route('/toc/<tocid>/formatted')
+def formattedtext(tocid):
+    text = rawtext(tocid)
+    text, offset = text['text'], text['offset']
+    styles = getstyles(tocid)['results']
+    tocs = gettocs(tocid)['results']
+    print(offset, flush=True)
+
+    annotations = styles + tocs
+    inserts = {}
+    for a in annotations:
+        if a['type'] == 'toc':
+            open = '<h' + str(a['depth']) + '>'
+            close = '</h' + str(a['depth']) + '>'
+        else:
+            open = '<' + a['tag'] + '>'
+            close = '</' + a['tag'] + '>'
+        inserts[a['open'] - offset] = open
+        inserts[a['close'] - offset] = close
+
+    i = 0
+    newtext = []
+    for key in sorted(inserts):
+        newtext.append(text[i:key])
+        newtext.append(inserts[key])
+        i = key
+    newtext.append(text[i:])
+
+    return {'offset': offset, 'text': ''.join(newtext).replace('\n', '<br>')}
