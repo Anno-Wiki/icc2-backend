@@ -102,7 +102,7 @@ def rawtext(tocid):
     offset = blocks['results'][0]['offset']         # offset is first text block
     range = {k:v-offset for k,v in range.items()}   # subtract offset from range
     text = ''.join(a['text'] for a in blocks['results'])    # join blocks
-    return {'offset': offset, 'text': text[range['open']:range['close']]}
+    return {'offset': range['open'], 'text': text[range['open']:range['close']]}
 
 
 @bp.route('/toc/<tocid>/tocs')
