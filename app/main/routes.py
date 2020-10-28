@@ -27,15 +27,15 @@ def alltexts():
     return {'results': unfold(results)}
 
 
-@bp.route('/toc/<bookid>/all/')
-def alltocs(bookid):
+@bp.route('/toc/<slug>/all/')
+def alltocs(slug):
     results = app.es.search(
         index='toc',
         body={
             'query': {
                 'bool': {
                     'must': [
-                        {'match': {'doc.bookid': bookid}},
+                        {'match': {'doc.slug': slug}},
                         {'match': {'doc.display': True}}
                     ]
                 }
