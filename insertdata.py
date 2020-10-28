@@ -44,14 +44,14 @@ def main(din, update):
     while True:
         try:
             if not i % 1000:
-                print(f"Request {i}")
+                print(f"Request {i}", flush=True)
             i += 1
             request.urlopen(ESDB)
         except:
             if not i % 1000:
-                print("...nope")
+                print("...nope", flush=True)
             continue
-        print("Success.")
+        print("Success.", flush=True)
         break
 
     for d in os.listdir(din):
