@@ -27,6 +27,24 @@ def alltexts():
     return {'results': unfold(results)}
 
 
+@bp.route('/text/<slug>')
+def gettext(slug):
+    results = app.es.search(
+        index='toc',
+        body={
+            'query': {
+                'bool': {
+                    'must': [
+                        {'match': {'doc.slug': slug}},
+                        {'match': {'doc.id': 0}}
+                    ]
+                }
+            }
+        }
+    )
+    return {'results': unfold(results)}
+
+
 @bp.route('/toc/<slug>/all/')
 def alltocs(slug):
     results = app.es.search(
