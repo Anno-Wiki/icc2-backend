@@ -67,6 +67,10 @@ def alltocs(slug):
 
 @bp.route('/toc/<tocid>/next/')
 def nexttoc(tocid):
+    """This route is meant to get the next toc given a toc, but I'm not sure how
+    robust it is.
+    """
+
     toc = gettoc(tocid)
     results = app.es.search(
         index='toc',
@@ -76,7 +80,6 @@ def nexttoc(tocid):
                     'must': [
                         {'match': {'doc.bookid': toc['bookid']}},
                         {'match': {'doc.display': True}},
-                        {'match': {'doc.parent': toc['parent']}},
                         {'range': {'doc.id': {'gt': toc['id']}}}
                     ]
                 }
@@ -85,6 +88,7 @@ def nexttoc(tocid):
             'sort': ['doc.id']
         }
     )
+
     return unfold(results)[0]
 
 
