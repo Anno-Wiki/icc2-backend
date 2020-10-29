@@ -42,7 +42,7 @@ def gettext(slug):
             }
         }
     )
-    return {'results': unfold(results)}
+    return unfold(results)[0]
 
 
 @bp.route('/toc/<slug>/all/')
