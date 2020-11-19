@@ -235,4 +235,13 @@ def formattedtext(tocid):
         i = key
     newtext.append(text[i:])
 
-    return {'offset': offset, 'text': ''.join(newtext).replace('\n', '<br>')}
+    tmp = ''.join(newtext)
+    tmp = tmp.split('\n\n')
+    for i in range(0, len(tmp)):
+        if (not tmp[i].startswith('<')
+                or tmp[i].startswith('<i>')
+                or tmp[i].startswith('<b>')
+                ):
+            tmp[i] = '<p>' + tmp[i] + '</p>'
+
+    return {'offset': offset, 'text': ''.join(tmp)}
