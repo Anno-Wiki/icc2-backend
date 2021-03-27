@@ -11,4 +11,4 @@ run:
 populate:
 	./.venv/bin/python insertdata.py
 migrate:
-	sudo docker exec -it icc2-backend_annowiki2_1 flask db migrate -m $(filter-out $@,$(MAKECMDGOALS))
+	sudo docker exec -it icc2-backend_annowiki2_1 alembic upgrade head
