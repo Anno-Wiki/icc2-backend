@@ -1,3 +1,5 @@
+%: # for passing arguments (make sure they're double quoted '""')
+	@:
 psql:
 	sudo docker exec -it icc2-backend_db_1 psql -U postgres
 flaskshell:
@@ -8,3 +10,5 @@ run:
 	sudo docker-compose up
 populate:
 	./.venv/bin/python insertdata.py
+migrate:
+	sudo docker exec -it icc2-backend_annowiki2_1 flask db migrate -m $(filter-out $@,$(MAKECMDGOALS))

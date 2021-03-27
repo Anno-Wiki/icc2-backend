@@ -14,7 +14,6 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     db.init_app(app)
-    from .models.users import User
     migrate.init_app(app, db)
 
     app.es = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
@@ -25,4 +24,3 @@ def create_app(config_class=Config):
 
     CORS(app, resources={r"/_api/*": {"origins": "*"}})
     return app
-
