@@ -7,6 +7,7 @@ decorator==4.4.2
 elasticsearch==7.9.1
 Flask==1.1.2
 Flask-Cors==3.0.9
+Flask-Migrate==2.7.0
 flask-shell-ipython==0.4.1
 Flask-SQLAlchemy==2.4.4
 ipython==7.18.1
@@ -23,6 +24,7 @@ parso==0.7.1
 pexpect==4.8.0
 pickleshare==0.7.5
 prompt-toolkit==3.0.7
+psycopg2==2.8.6
 psycopg2-binary==2.8.6
 ptyprocess==0.6.0
 Pygments==2.7.1
