@@ -9,6 +9,7 @@ services:
             - .:/code
         environment:
             FLASK_ENV: development
+            PYTHONUNBUFFERED: 1
         networks:
             - elastic
             - postgres
@@ -49,6 +50,8 @@ services:
             - 9200:9200
         networks:
             - elastic
+        logging:
+            driver: "none"
     es02:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
         container_name: es02
@@ -67,6 +70,8 @@ services:
             - data02:/usr/share/elasticsearch/data
         networks:
             - elastic
+        logging:
+            driver: "none"
     es03:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
         container_name: es03
@@ -85,6 +90,8 @@ services:
             - data03:/usr/share/elasticsearch/data
         networks:
             - elastic
+        logging:
+            driver: "none"
 
 volumes:
     data01:
