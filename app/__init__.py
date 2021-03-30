@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from elasticsearch import Elasticsearch
 from flask_migrate import Migrate
+from .utils import handle_auth_error, AuthError
 
 from config import Config
 
@@ -21,6 +22,7 @@ def create_app(config_class=Config):
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp, url_prefix='/_api')
+    app.register_error_handler(AuthError, handle_auth_error)
 
     CORS(app, resources={r"/_api/*": {"origins": "*"}})
     return app

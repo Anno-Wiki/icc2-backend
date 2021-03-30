@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 class Config:
     # directories
@@ -19,4 +20,7 @@ class Config:
 
     # SQLA settings
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    AUTH0_SECRET = os.environ.get('AUTH0_SECRET') \
+        or 'you-will-never-guess'
+    AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN') \
+        or 'localhost:5000'
