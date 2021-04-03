@@ -1,4 +1,5 @@
 from flask import Flask
+from logging.config import dictConfig
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from elasticsearch import Elasticsearch
