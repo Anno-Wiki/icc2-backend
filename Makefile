@@ -10,5 +10,5 @@ run:
 	sudo docker-compose up
 populate:
 	./.venv/bin/python insertdata.py
-migrate:
+upgrade:
 	sudo docker exec -it icc2-backend_annowiki2_1 alembic upgrade head
