@@ -2,7 +2,7 @@ import json
 from six.moves.urllib.request import urlopen
 from functools import wraps
 
-from flask import current_app as app, request, jsonify, _request_ctx_stack
+from flask import current_app as app, request, jsonify, _request_ctx_stack, logging
 from flask_cors import cross_origin
 from jose import jwt
 
@@ -17,6 +17,7 @@ class AuthError(Exception):
 def handle_auth_error(ex):
     response = jsonify(ex.error)
     response.status_code = ex.status_code
+    logging.info(response)
     return response
 
 
@@ -57,7 +58,7 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         AUTH0_DOMAIN = app.config["AUTH0_DOMAIN"]
-        API_AUDIENCE = app.config["AUTH0_DOMAIN"]
+        API_AUDIENCE = app.config["AUTH0_AUDIENCE"]
         ALGORITHMS = ["RS256"]
         token = get_token_auth_header()
         jsonurl = urlopen("https://"+AUTH0_DOMAIN+"/.well-known/jwks.json")

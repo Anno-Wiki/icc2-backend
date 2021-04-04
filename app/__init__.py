@@ -14,6 +14,7 @@ migrate = Migrate()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.register_error_handler(AuthError, handle_auth_error)
 
     db.init_app(app)
     migrate.init_app(app, db)

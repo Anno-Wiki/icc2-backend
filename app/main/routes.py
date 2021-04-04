@@ -1,5 +1,3 @@
-from functools import reduce
-
 from flask import current_app as app
 
 from app.main import bp
@@ -10,7 +8,7 @@ def unfold(results):
     return [t['_source']['doc'] for t in results['hits']['hits']]
 
 
-@bp.route('/toc/<toc_id>/')
+@bp.route('/toc/<toc_id>')
 def gettoc(toc_id):
     results = app.es.get(index='toc', id=toc_id)
     return results['_source']['doc']
@@ -45,7 +43,7 @@ def gettext(slug):
     return unfold(results)[0]
 
 
-@bp.route('/toc/<slug>/all/')
+@bp.route('/toc/<slug>/all')
 def alltocs(slug):
     results = app.es.search(
         index='toc',
@@ -65,7 +63,7 @@ def alltocs(slug):
     return {'results': unfold(results)}
 
 
-@bp.route('/toc/<tocid>/next/')
+@bp.route('/toc/<tocid>/next')
 def nexttoc(tocid):
     """This route is meant to get the next toc given a toc, but I'm not sure how
     robust it is.
@@ -92,14 +90,14 @@ def nexttoc(tocid):
     return unfold(results)[0]
 
 
-@bp.route('/toc/<tocid>/range/')
+@bp.route('/toc/<tocid>/range')
 def getrange(tocid):
     toc = gettoc(tocid)
     next = nexttoc(tocid)
     return {'open': toc['open'], 'close': next['open']}
 
 
-@bp.route('/toc/<tocid>/blocks/')
+@bp.route('/toc/<tocid>/blocks')
 def getblocks(tocid):
     toc = gettoc(tocid)
     range = getrange(tocid)
@@ -129,7 +127,7 @@ def getblocks(tocid):
     return {'results': unfold(results)}
 
 
-@bp.route('/toc/<tocid>/raw/')
+@bp.route('/toc/<tocid>/raw')
 def rawtext(tocid):
     blocks = getblocks(tocid)
     range = getrange(tocid)

@@ -24,6 +24,8 @@ class Config:
         or 'you-will-never-guess'
     AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN') \
         or 'localhost:5000'
+    AUTH0_AUDIENCE = os.environ.get('AUTH0_AUDIENCE') \
+        or 'localhost:5000'
 
     LOGGING = {
         'version': 1,

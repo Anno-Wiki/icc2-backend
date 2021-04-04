@@ -33,6 +33,7 @@ ptyprocess==0.6.0
 pyasn1==0.4.8
 pycparser==2.20
 Pygments==2.7.1
+PyJWT==2.0.1
 pylint==2.6.0
 python-dateutil==2.8.1
 python-dotenv==0.14.0
