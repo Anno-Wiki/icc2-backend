@@ -2,6 +2,8 @@ from flask import current_app as app
 
 from app.main import bp
 
+from app.models.annotations import Annotation, Edit
+
 
 def unfold(results):
     """Helper route to unfold es results and dispense with dict cruft"""
@@ -243,3 +245,24 @@ def formattedtext(tocid):
             tmp[i] = '<p>' + tmp[i] + '</p>'
 
     return {'offset': offset, 'text': ''.join(tmp)}
+
+@bp.route('/annotations/toc/<toc_id>')
+def get_annotations(toc_id):
+    offsets = getrange(toc_id)
+    bookid = toc_id.split('-')[0]
+    a_objects = Annotation.query.\
+        join(Edit).\
+        filter(Annotation.bookid==bookid,
+               Edit.open>= offsets['open']).all()
+    annotations = []
+    for a in a_objects:
+        annotations.append({
+            'open': a.HEAD.open - offsets['open'],
+            'close': a.HEAD.close - offsets['close'],
+            'text': a.HEAD.text,
+            'author': a.author
+        })
+    print(annotations)
+    return {'annotations': annotations, 'quantity': len(annotations)}
+
+
