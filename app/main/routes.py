@@ -259,7 +259,7 @@ def get_annotations(toc_id):
     a_objects = Annotation.query.\
         join(Edit).\
         filter(Annotation.bookid==bookid,
-               Edit.open>= offsets['open']).all()
+               Edit.open>= offsets['open']).order_by(Edit.open).all()
     annotations = []
     for a in a_objects:
         annotations.append({
@@ -270,5 +270,3 @@ def get_annotations(toc_id):
             'author': a.author
         })
     return {'annotations': annotations, 'quantity': len(annotations)}
-
-
