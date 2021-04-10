@@ -7,7 +7,10 @@ from app.models.annotations import Annotation, Edit
 
 def unfold(results):
     """Helper route to unfold es results and dispense with dict cruft"""
-    return [t['_source']['doc'] for t in results['hits']['hits']]
+    try:
+        return [t['_source']['doc'] for t in results['hits']['hits']]
+    except:
+        return []
 
 
 @bp.route('/toc/<toc_id>')
@@ -42,7 +45,10 @@ def gettext(slug):
             }
         }
     )
-    return unfold(results)[0]
+    try:
+        return unfold(results)[0]
+    except:
+        return {}
 
 
 @bp.route('/toc/<slug>/all')
@@ -263,7 +269,6 @@ def get_annotations(toc_id):
             'text': a.HEAD.text,
             'author': a.author
         })
-    print(annotations)
     return {'annotations': annotations, 'quantity': len(annotations)}
 
 
