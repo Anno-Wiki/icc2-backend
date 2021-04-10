@@ -257,8 +257,9 @@ def get_annotations(toc_id):
     annotations = []
     for a in a_objects:
         annotations.append({
+            'id': a.id,
             'open': a.HEAD.open - offsets['open'],
-            'close': a.HEAD.close - offsets['close'],
+            'close': a.HEAD.close - offsets['open'],
             'text': a.HEAD.text,
             'author': a.author
         })
