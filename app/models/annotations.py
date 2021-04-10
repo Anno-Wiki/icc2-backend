@@ -9,7 +9,11 @@ class Annotation(Base):
 
     created = db.Column(db.DateTime)
 
-    edits = db.relationship("Edit", back_populates="annotation")
+    edits = db.relationship('Edit', back_populates='annotation')
+
+    HEAD = db.relationship('Edit',
+                           primaryjoin='Edit.annotation_id==Annotation.id',
+                           uselist=False)
 
     def __init__(self, book, author, open, close, text, *args, **kwargs):
         self.created = dt.now()
@@ -30,7 +34,7 @@ class Edit(Base):
 
     created = db.Column(db.DateTime)
 
-    annotation = db.relationship("Annotation", back_populates="edits")
+    annotation = db.relationship('Annotation', back_populates='edits')
 
     def __init__(self, editor, open, close, text, *args, **kwargs):
         self.editor = editor
