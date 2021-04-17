@@ -222,13 +222,18 @@ def formattedtext(tocid):
     # create an inserts dict for inserting the styles
     annotations = styles + tocs
     inserts = {}
+    hs = ['h' + str(i) for i in range(1,6)]
+    realtags = ['p', *hs, 'i', 'b']
     for a in annotations:
         if a['type'] == 'toc':
             open = '<h' + str(a['depth']) + '>'
             close = '</h' + str(a['depth']) + '>'
-        else:
+        elif a['tag'] in realtags:
             open = '<' + a['tag'] + '>'
             close = '</' + a['tag'] + '>'
+        else:
+            open = f'<div class="{a["tag"]}">'
+            close = '</div>'
         inserts[a['open'] - offset] = open
         inserts[a['close'] - offset] = close
 
