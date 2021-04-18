@@ -9,7 +9,7 @@ build:
 run:
 	sudo docker-compose up
 populate:
-	sudo docker exec $(CONTAINER) insertdata.py icc2-library
+	sudo docker exec $(CONTAINER) python insertdata.py icc2-library
 migrate:
 	sudo docker exec $(CONTAINER) alembic revision
 upgrade:

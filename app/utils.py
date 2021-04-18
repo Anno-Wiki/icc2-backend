@@ -6,8 +6,6 @@ from flask import current_app as app, request, jsonify, _request_ctx_stack, logg
 from flask_cors import cross_origin
 from jose import jwt
 
-
-
 # Error handler
 class AuthError(Exception):
     def __init__(self, error, status_code):

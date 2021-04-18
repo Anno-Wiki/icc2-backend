@@ -105,24 +105,21 @@ def getrange(tocid):
     return {'open': toc['open'], 'close': next['open']}
 
 
-@bp.route('/toc/<tocid>/blocks')
-def getblocks(tocid):
-    toc = gettoc(tocid)
-    range = getrange(tocid)
+def getblocksfromrange(bookid, open, close):
     results = app.es.search(
         index='text',
         body={
             'query': {
                 'bool': {
                     'must': [
-                        {'match': {'doc.bookid': toc['bookid']}},
+                        {'match': {'doc.bookid': bookid}},
                         {
                             'range':
                             {
                                 'doc.offset':
                                 {
-                                    'lte': range['open'],
-                                    'lt': range['close']
+                                    'lte': open,
+                                    'lt': close
                                 }
                             }
                         }
@@ -133,6 +130,23 @@ def getblocks(tocid):
     )
     # get rid of es cruft
     return {'results': unfold(results)}
+
+
+@bp.route('/toc/<tocid>/blocks')
+def getblocks(tocid):
+    toc = gettoc(tocid)
+    range = getrange(tocid)
+    blocks = getblocksfromrange(toc['bookid'], range['open'], range['close'])
+    return blocks
+
+
+def rawtextfromrange(bookid, open, close):
+    blocks = getblocksfromrange(bookid, open, close)
+    offset = blocks['results'][0]['offset']
+    open -= offset
+    close -= offset
+    text = ''.join(a['text'] for a in blocks['results'])
+    return {'results': text[open:close]}
 
 
 @bp.route('/toc/<tocid>/raw')
