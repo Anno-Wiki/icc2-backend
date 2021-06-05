@@ -8,9 +8,9 @@ build:
 	sudo docker-compose up --build
 run:
 	sudo docker-compose up
-populate:
-	sudo docker exec $(CONTAINER) python insertdata.py icc2-library
 migrate:
 	sudo docker exec $(CONTAINER) alembic revision
 upgrade:
 	sudo docker exec $(CONTAINER) alembic upgrade head
+populate: upgrade
+	sudo docker exec $(CONTAINER) python insertdata.py icc2-library
