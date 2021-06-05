@@ -271,6 +271,7 @@ def formattedtext(tocid):
 
     return {'offset': offset, 'text': ''.join(tmp)}
 
+
 @bp.route('/annotations/toc/<toc_id>')
 def get_annotations(toc_id):
     offsets = getrange(toc_id)

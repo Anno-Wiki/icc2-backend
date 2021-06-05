@@ -1,4 +1,4 @@
-from app import db
+from app import db, guard
 from .mixins import Base
 
 class User(Base):
@@ -41,6 +41,11 @@ class User(Base):
         instance
         """
         return self.hashed_password
+
+    @password.setter
+    def password(self, val):
+        """Convenience method, setting a password transparently."""
+        self.hashed_password = guard.hash_password(val)
 
     @classmethod
     def lookup(cls, username):
