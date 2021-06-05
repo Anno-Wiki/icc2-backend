@@ -1,13 +1,11 @@
-from flask import current_app as app, request
-from ..utils import requires_auth
+from flask import request
 
 from app import db
 from app.main import bp
 from .routes import getrange
-from ..models.annotations import Annotation
+from app.models.annotations import Annotation
 
 @bp.route('/annotate/toc/<toc_id>', methods=['POST'])
-@requires_auth
 def annotate(toc_id):
     offset = getrange(toc_id)['open']
     open = offset + request.json['start']

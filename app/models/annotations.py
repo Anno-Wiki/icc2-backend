@@ -15,12 +15,12 @@ class Annotation(Base):
                            primaryjoin='Edit.annotation_id==Annotation.id',
                            uselist=False)
 
-    def __init__(self, book, author, open, close, text, *args, **kwargs):
+    def __init__(self, book, author, start, end, text, *args, **kwargs):
         self.created = dt.now()
         self.bookid = book
         self.author = author
         super().__init__(*args, **kwargs)
-        self.edits.append(Edit(author, open, close, text))
+        self.edits.append(Edit(author, start, end, text))
 
 
 class Edit(Base):
@@ -29,16 +29,16 @@ class Edit(Base):
     text = db.Column(db.Text)
     editor = db.Column(db.String)
 
-    open = db.Column(db.Integer)
-    close = db.Column(db.Integer)
+    start = db.Column(db.Integer)
+    end = db.Column(db.Integer)
 
     created = db.Column(db.DateTime)
 
     annotation = db.relationship('Annotation', back_populates='edits')
 
-    def __init__(self, editor, open, close, text, *args, **kwargs):
+    def __init__(self, editor, start, end, text, *args, **kwargs):
         self.editor = editor
-        self.open, self.close = open, close
+        self.start, self.end = start, end
         self.text = text
         self.created = dt.utcnow()
         super().__init__(*args, **kwargs)

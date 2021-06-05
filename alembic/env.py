@@ -5,26 +5,26 @@ from sqlalchemy import pool
 
 from alembic import context
 
-import os, sys
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-from config import Config
-url = Config.SQLALCHEMY_DATABASE_URI
+import os, inspect, sys
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
-config = context.config
-config.set_main_option("sqlalchemy.url", url)
+from config import Config
+
+config = context.config # alembic
+
+config.set_main_option('sqlalchemy.url', Config.SQLALCHEMY_DATABASE_URI)
+print(Config.SQLALCHEMY_DATABASE_URI)
+
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+
+from app.models import Annotation
+target_metadata = Annotation.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
