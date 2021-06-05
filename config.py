@@ -37,3 +37,6 @@ class Config:
             'handlers': ['wsgi']
         }
     }
+
+    JWT_ACCESS_LIFESPAN = {"hours": 24}
+    JWT_REFRESH_LIFESPAN = {"days": 30}

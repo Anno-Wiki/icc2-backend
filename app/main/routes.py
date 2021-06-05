@@ -278,15 +278,15 @@ def get_annotations(toc_id):
     a_objects = Annotation.query.\
         join(Edit).\
         filter(Annotation.bookid==bookid,
-               Edit.open>=offsets['open'],
-               Edit.close<=offsets['close']
-               ).order_by(Edit.close).all()
+               Edit.start>=offsets['open'],
+               Edit.end<=offsets['close']
+               ).order_by(Edit.end).all()
     annotations = []
     for a in a_objects:
         annotations.append({
             'id': a.id,
-            'open': a.HEAD.open - offsets['open'],
-            'close': a.HEAD.close - offsets['open'],
+            'open': a.HEAD.start - offsets['open'],
+            'close': a.HEAD.end - offsets['open'],
             'text': a.HEAD.text,
             'author': a.author
         })
