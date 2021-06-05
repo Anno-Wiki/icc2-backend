@@ -1,11 +1,14 @@
 from datetime import datetime as dt
 
+from sqlalchemy.orm import backref
+
 from app import db
 from app.models.mixins import Base
 
 class Annotation(Base):
     bookid = db.Column(db.Integer)
-    author = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', backref=backref('annotations', lazy='dynamic'))
 
     created = db.Column(db.DateTime)
 
@@ -27,7 +30,8 @@ class Edit(Base):
     annotation_id = db.Column(db.Integer, db.ForeignKey('annotation.id'),
                               index=True)
     text = db.Column(db.Text)
-    editor = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    editor = db.relationship('User', backref=backref('edits', lazy='dynamic'))
 
     start = db.Column(db.Integer)
     end = db.Column(db.Integer)
