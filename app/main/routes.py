@@ -289,6 +289,6 @@ def get_annotations(toc_id):
             'open': a.HEAD.start - offsets['open'],
             'close': a.HEAD.end - offsets['open'],
             'text': a.HEAD.text,
-            'author': a.author
+            'author': a.author.username
         })
     return {'annotations': annotations, 'quantity': len(annotations)}
